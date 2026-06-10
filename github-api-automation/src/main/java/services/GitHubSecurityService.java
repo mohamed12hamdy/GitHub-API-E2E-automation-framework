@@ -28,6 +28,4 @@ public class GitHubSecurityService {
                 .when()
                 .get(AuthEndpoints.Check_RATE_LIMIT);
     }
-
-
 }

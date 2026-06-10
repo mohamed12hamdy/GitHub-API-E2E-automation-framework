@@ -55,6 +55,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-path</artifactId>
+            <version>5.5.0</version>
+
+        </dependency>
+
 
         <!-- OR if using Logback (simpler) -->
         <dependency>

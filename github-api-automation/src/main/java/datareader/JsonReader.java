@@ -1,16 +1,14 @@
 package datareader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.path.json.JsonPath;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.FileReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.List;
 
-import static com.jayway.jsonpath.internal.function.ParamType.PATH;
+import io.restassured.path.json.JsonPath;
 
 public class JsonReader
 {
@@ -54,5 +52,13 @@ public class JsonReader
             throw new RuntimeException(e);
         }
     }
-
+    public List<String> getJsonList(String key) {
+        try {
+            return JsonPath.from(jsonReader)
+                    .getList(key, String.class);
+        } catch (Exception e) {
+            System.out.println("Error reading json list with path: " + key + " - " + e.getMessage());
+            return List.of();
+        }
+    }
 }
