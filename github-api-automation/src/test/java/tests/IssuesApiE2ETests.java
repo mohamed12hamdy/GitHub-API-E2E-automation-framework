@@ -4,6 +4,7 @@ import datareader.JsonReader;
 import io.restassured.response.Response;
 import models.Comment;
 import models.Issue;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import services.issuesService;
@@ -30,28 +31,31 @@ public class IssuesApiE2ETests extends RepositoryApiBase {
 
    @Test
    public void testIssueFullE2ETests() {
-      String repoName = repository.getName();
 
-      Response response = IssuesService.createIssue(username, repoName, issue);
+      Response response = IssuesService.createIssue(username, repository.getName(), issue);
       response.then().statusCode(201).body("state", equalTo("open"));
 
       int issueNumber = response.jsonPath().getInt("number");
 
-     IssuesService.getIssue(username, repoName, issueNumber).then().statusCode(200);
+     IssuesService.getIssue(username, repository.getName(), issueNumber).then().statusCode(200);
 
-     IssuesService.addCommentToIssue(username, repoName, issueNumber,
+     IssuesService.addCommentToIssue(username, repository.getName(), issueNumber,
                       JsonReader.getJson("Comment", Comment.class))
               .then().statusCode(201);
 
-     IssuesService.updateIssueTitle(username, repoName, issueNumber, "Updated Issue Title")
+     IssuesService.updateIssueTitle(username, repository.getName(), issueNumber, "Updated Issue Title")
               .then().statusCode(200)
               .body("title", equalTo("Updated Issue Title"));
 
-      IssuesService.closeIssue(username, repoName, issueNumber)
+      IssuesService.closeIssue(username, repository.getName(), issueNumber)
               .then().statusCode(200)
               .body("state", equalTo("closed"));
 
-      repositoryService.deleteRepo(username, repoName).then().statusCode(204);
+   }
+
+   @AfterClass
+    public void teardown() {
+       repositoryService.deleteRepo(username, repository.getName());
    }
 
 
