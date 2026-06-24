@@ -1,6 +1,7 @@
 package tests;
 
 import datareader.JsonReader;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import models.AssignLabelToIssue;
 import models.Issue;
@@ -14,6 +15,8 @@ import services.LabelsAndMilestonesService;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
+@Epic("GitHub API")
+@Feature("Labels and Milestones")
 public class LabelsAndMilestonesE2ETests extends IssueApiBase {
 
     private LabelsAndMilestonesService labelsAndMilestonesService;
@@ -42,6 +45,8 @@ public class LabelsAndMilestonesE2ETests extends IssueApiBase {
                   MilestoneData.getJsonData("due_on"));
     }
 
+    @Story("Labels and Milestones E2E Flow")
+    @Severity(SeverityLevel.CRITICAL)
     @Test
     public void createLabelFullE2ETests() {
         //1.Create label like critical
@@ -56,13 +61,13 @@ public class LabelsAndMilestonesE2ETests extends IssueApiBase {
         assignMilestoneToIssue(milestoneNumber);
     }
 
-    //@Step("")
+    @Step("Create label")
     private void createLabel(String username, String repo, Label label) {
         labelsAndMilestonesService.createLabel(username,repository.getName(),label)
                 .then()
                 .statusCode(201);
     }
-    //@Step("Assign label to issue")
+    @Step("Assign label to issue")
     private void assignLabelToIssue() {
         labelsAndMilestonesService.assignLabelToIssue(
                         username,
@@ -74,7 +79,7 @@ public class LabelsAndMilestonesE2ETests extends IssueApiBase {
                 .body("name", hasItem("critical"));
     }
 
-    //@Step("Create milestone")
+    @Step("Create milestone")
     private int createMilestone() {
         return labelsAndMilestonesService.createMileStone(
                         username,
@@ -87,7 +92,7 @@ public class LabelsAndMilestonesE2ETests extends IssueApiBase {
                 .path("number");
     }
 
-    //@Step("Assign milestone to issue")
+    @Step("Assign milestone to issue")
     private void assignMilestoneToIssue(int milestoneNumber) {
         labelsAndMilestonesService.assignMilestoneToIssue(
                         username,

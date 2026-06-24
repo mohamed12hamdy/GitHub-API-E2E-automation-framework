@@ -1,12 +1,15 @@
 package tests;
 
 import config.ConfigReader;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import services.GitHubSecurityService;
 
+@Epic("GitHub API")
+@Feature("Security")
 public class GithubSecurityTests extends BaseTest{
 
     private GitHubSecurityService gitHubSecurityService;
@@ -16,6 +19,8 @@ public class GithubSecurityTests extends BaseTest{
         gitHubSecurityService = new GitHubSecurityService();
     }
 
+    @Story("Authenticated user")
+    @Severity(SeverityLevel.CRITICAL)
     @Test
     public void testGetAuthenticatedUser() {
         Response response = gitHubSecurityService.getAuthenticatedUser();
@@ -27,6 +32,8 @@ public class GithubSecurityTests extends BaseTest{
                 "Expected login to match the configured username" );
     }
 
+    @Story("Unauthenticated user")
+    @Severity(SeverityLevel.CRITICAL)
     @Test
     public void testGenUnAuthenticatedUserWithoutToken() {
         Response response = gitHubSecurityService.getUnauthenticatedUser();
@@ -35,6 +42,8 @@ public class GithubSecurityTests extends BaseTest{
                 "Expected status code 401 for unauthenticated user");
     }
 
+    @Story("Rate limit")
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void testCheckRateLimit() {
         Response response = gitHubSecurityService.checkRateLimit();
@@ -45,6 +54,4 @@ public class GithubSecurityTests extends BaseTest{
         int remaining = response.jsonPath().getInt("rate.remaining");
         Assert.assertTrue(remaining > 0, "Expected remaining rate limit to be greater than 0");
     }
-
-
 }

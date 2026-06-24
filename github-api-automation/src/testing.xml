@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="GitHub API Automation Framework">
+    <test name="Security Tests">
+        <classes>
+            <class name="tests.GithubSecurityTests"/>
+        </classes>
+    </test>
+    <test name="Issues E2E">
+        <classes>
+            <class name="tests.IssuesApiE2ETests"/>
+        </classes>
+    </test>
+    <test name="Labels and Milestones E2E">
+        <classes>
+            <class name="tests.LabelsAndMilestonesE2ETests"/>
+        </classes>
+    </test>
+    <test name="Branches and Pull Requests E2E">
+        <classes>
+            <class name="tests.BranchesAndPullRequestE2ETests"/>
+        </classes>
+    </test>
+</suite>

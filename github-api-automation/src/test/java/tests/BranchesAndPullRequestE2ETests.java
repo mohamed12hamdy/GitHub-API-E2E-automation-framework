@@ -1,7 +1,7 @@
 package tests;
 
 import datareader.JsonReader;
-import io.restassured.response.Response;
+import io.qameta.allure.*;
 import models.File;
 import models.MergePullRequest;
 import models.PullRequest;
@@ -12,6 +12,8 @@ import services.BranchesAndPullRequestService;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
+@Epic("GitHub API")
+@Feature("Branches and Pull Requests")
 public class BranchesAndPullRequestE2ETests extends RepositoryApiBase {
 
     private BranchesAndPullRequestService branchesAndPullRequestService;
@@ -30,6 +32,8 @@ public class BranchesAndPullRequestE2ETests extends RepositoryApiBase {
                 getString("object.sha");
     }
 
+    @Story("Branches and Pull Request E2E Flow")
+    @Severity(SeverityLevel.CRITICAL)
     @Test
     public void testBranchesAndPullRequestE2ETests() {
 
@@ -45,6 +49,7 @@ public class BranchesAndPullRequestE2ETests extends RepositoryApiBase {
 
     }
 
+    @Step("Create new branch")
     private void createNewBranch() {
         branchesAndPullRequestService
                 .createNewBranch(username, repository.getName(), ref, sha)
@@ -54,6 +59,7 @@ public class BranchesAndPullRequestE2ETests extends RepositoryApiBase {
                 .body("object.sha", equalTo(sha));
     }
 
+    @Step("Create file on new branch")
     private void createFileOnNewBranch() {
         branchesAndPullRequestService.createFileOnNewBranch(username, repository.getName(), filepath,
                         JsonReader.getJson("File", File.class))
@@ -61,6 +67,7 @@ public class BranchesAndPullRequestE2ETests extends RepositoryApiBase {
                 .statusCode(201);
     }
 
+    @Step("Create pull request")
     private Integer createPullRequest() {
        return  branchesAndPullRequestService.createPullRequest(
                         username,
@@ -72,6 +79,7 @@ public class BranchesAndPullRequestE2ETests extends RepositoryApiBase {
                 .path("number");
     }
 
+    @Step("Get pull request and verify state is open")
     private void getPullRequest(Integer pullNumber) {
         branchesAndPullRequestService.getPullRequest(username, repository.getName(), pullNumber)
                 .then()
@@ -79,6 +87,7 @@ public class BranchesAndPullRequestE2ETests extends RepositoryApiBase {
                 .body("state", equalTo("open"));
     }
 
+    @Step("Merge pull request")
     private void mergePullRequest(Integer pullNumber) {
         branchesAndPullRequestService.mergePullRequest(username, repository.getName(), pullNumber,
                         JsonReader.getJson("MergePullRequest", MergePullRequest.class))
@@ -87,12 +96,9 @@ public class BranchesAndPullRequestE2ETests extends RepositoryApiBase {
                 .body("merged", equalTo(true));
     }
 
-
     @AfterClass
     public void teardown() {
         repositoryService.deleteRepo(username, repository.getName());
     }
-
-
 }
 

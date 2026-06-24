@@ -1,7 +1,7 @@
 package tests;
 
 import datareader.JsonReader;
-import io.restassured.response.Response;
+import io.qameta.allure.*;
 import models.Comment;
 import models.Issue;
 import org.testng.annotations.AfterClass;
@@ -11,6 +11,8 @@ import services.issuesService;
 
 import static org.hamcrest.Matchers.equalTo;
 
+@Epic("GitHub API")
+@Feature("Issues")
 public class IssuesApiE2ETests extends RepositoryApiBase {
 
    private issuesService IssuesService;
@@ -29,7 +31,9 @@ public class IssuesApiE2ETests extends RepositoryApiBase {
       );
    }
 
-   @Test
+    @Story("Issue E2E Flow")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test
    public void testIssueFullE2ETests() {
 
       int issueNumber = createIssue(username,repository.getName(),issue);
@@ -44,7 +48,7 @@ public class IssuesApiE2ETests extends RepositoryApiBase {
    }
 
 
-    //@Step("Create issue")
+    @Step("Create issue")
     private int createIssue(String username, String repo, Issue issue) {
         return IssuesService.createIssue(username, repo, issue)
                 .then()
@@ -55,14 +59,14 @@ public class IssuesApiE2ETests extends RepositoryApiBase {
     }
 
 
-    //@Step("Get issue")
+    @Step("Get issue")
     private void getIssue(int issueNumber) {
         IssuesService.getIssue(username, repository.getName(), issueNumber)
                 .then()
                 .statusCode(200);
     }
 
-    //@Step("Add comment to issue")
+    @Step("Add comment to issue")
     private void addComment(int issueNumber) {
         IssuesService.addCommentToIssue(username, repository.getName(), issueNumber,
                         JsonReader.getJson("Comment", Comment.class))
@@ -70,7 +74,7 @@ public class IssuesApiE2ETests extends RepositoryApiBase {
                 .statusCode(201);
     }
 
-    //@Step("Update issue title")
+    @Step("Update issue title")
     private void updateIssueTitle(int issueNumber) {
         IssuesService.updateIssueTitle(username, repository.getName(), issueNumber,
                         "Updated Issue Title")
@@ -79,7 +83,7 @@ public class IssuesApiE2ETests extends RepositoryApiBase {
                 .body("title", equalTo("Updated Issue Title"));
     }
 
-    //@Step("Close issue")
+    @Step("Close issue")
     private void closeIssue(int issueNumber) {
         IssuesService.closeIssue(username, repository.getName(), issueNumber)
                 .then()
@@ -91,9 +95,4 @@ public class IssuesApiE2ETests extends RepositoryApiBase {
     public void teardown() {
        repositoryService.deleteRepo(username, repository.getName());
    }
-
-
-
-
-
 }
