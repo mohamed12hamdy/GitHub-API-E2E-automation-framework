@@ -19,6 +19,9 @@ jobs:
           cache: maven
 
       - name: Run Tests
+        working-directory: github-api-automation
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
         run: mvn clean test -DsuiteXmlFile=testing.xml
 
       - name: Upload Allure Results
@@ -26,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
-          path: target/allure-results
+          path: github-api-automation/target/allure-results
 
       - name: Install Allure
         if: always()
@@ -37,7 +40,7 @@ jobs:
       - name: Generate Allure Report
         if: always()
         run: |
-          ./allure-2.34.1/bin/allure generate target/allure-results --clean -o allure-report
+          ./allure-2.34.1/bin/allure generate github-api-automation/target/allure-results --clean -o allure-report
 
       - name: Upload Allure Report
         if: always()
@@ -55,16 +58,18 @@ jobs:
           secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: GitHub API Automation Test Results
+          subject: GitHub API Automation Test Results - ${{ job.status }}
+
           to: ${{ secrets.MAIL_TO }}
+
           from: GitHub Actions
 
           body: |
-            Test execution completed.
+            API Automation execution completed.
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
             Status: ${{ job.status }}
 
-            Check the report here:
+            View execution details:
             https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
